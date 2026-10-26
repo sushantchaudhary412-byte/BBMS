@@ -1,0 +1,95 @@
+/* Admin operations console: scoped to admin pages, built on BBMS shared tokens. */
+.admin-sidebar{padding:26px 13px;background:linear-gradient(180deg,#fff 0%,#fcfbfb 100%)}
+.admin-sidebar>a{min-height:46px;border:1px solid transparent;gap:11px;color:#5d6877}
+.admin-sidebar>a.active{background:#fff0f1;border-color:#f1dadd;color:#982637;box-shadow:inset 3px 0 #ac293d}
+.admin-sidebar>a:hover{background:#fbf3f3;color:#842031}
+.admin-nav-icon{display:inline-grid;place-items:center;width:22px;flex:0 0 22px;color:#a42a3c;font-size:16px}
+.admin-main{padding-top:36px}
+.admin-page-heading{margin-bottom:22px}
+.admin-page-heading .eyebrow,.admin-panel .eyebrow{color:#a52a3d}
+.admin-page-heading h1{font-size:clamp(28px,3vw,36px);letter-spacing:-1.2px}
+.admin-priority-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.admin-priority-item{display:grid;grid-template-columns:42px minmax(0,1fr) 20px;align-items:center;gap:13px;min-width:0;padding:17px 18px;border:1px solid #e9e5e6;border-radius:14px;background:linear-gradient(145deg,#fff 0%,#fffafa 100%);color:#26313d;text-decoration:none;box-shadow:0 6px 20px rgba(34,42,52,.035)}
+.admin-priority-item:hover{border-color:#dfc7ca;background:#fff}
+.admin-priority-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#fff0f1;color:#a52a3d;font-size:18px;font-weight:750}
+.admin-priority-item:nth-child(2) .admin-priority-icon{background:#eff6f1;color:#286448}.admin-priority-item:nth-child(3) .admin-priority-icon{background:#fff5e7;color:#97611b}
+.admin-priority-item strong,.admin-priority-item small{display:block}.admin-priority-item strong{font-size:24px;line-height:1.1;letter-spacing:-.5px}.admin-priority-item small{margin-top:4px;color:#687584;font-size:11px;line-height:1.4}
+.admin-priority-arrow{color:#9ca5af;font-size:18px}
+.admin-panel{padding:22px 23px;border-radius:15px}
+.admin-panel .panel-heading{display:flex;gap:18px;justify-content:space-between;align-items:flex-end}
+.admin-panel .panel-heading h2{margin:5px 0;font-size:18px;letter-spacing:-.3px}
+.admin-panel .panel-heading p{max-width:720px;line-height:1.5}
+.admin-panel td{vertical-align:middle}
+.admin-appointment-list{display:grid}
+.admin-appointment{display:grid;grid-template-columns:minmax(130px,1.1fr) minmax(130px,.9fr) minmax(120px,1fr) auto minmax(260px,1.5fr);align-items:center;gap:14px;padding:16px 0;border-top:1px solid #eff0f2}
+.admin-appointment-person,.admin-appointment-when{display:grid;gap:3px;min-width:0}.admin-appointment-person strong,.admin-appointment-when strong{color:#303944;font-size:12px}.admin-appointment-person small,.admin-appointment-when span,.admin-appointment-where{color:#798391;font-size:11px;overflow-wrap:anywhere}
+.admin-appointment-form{display:grid;grid-template-columns:minmax(105px,.8fr) minmax(115px,1fr) auto;align-items:center;gap:7px;min-width:0}.admin-appointment-form select,.admin-appointment-form input{min-width:0;width:100%;height:37px;padding:7px 9px;border:1px solid #dfe2e7;border-radius:8px;background:#fff;font-size:11px}.admin-appointment-form select:focus,.admin-appointment-form input:focus{outline:3px solid #a9273d22;border-color:#b94759}
+.admin-empty-state{display:grid;gap:5px;padding:26px 12px;text-align:center;color:#77818e}.admin-empty-state strong{color:#3c4653;font-size:13px}.admin-empty-state span{font-size:12px}
+.admin-quick-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.admin-quick-links a{display:grid;grid-template-columns:1fr auto;gap:5px 12px;padding:16px 18px;border:1px solid #e6e8ec;border-radius:12px;background:#fff;color:inherit;text-decoration:none}.admin-quick-links a:hover{border-color:#d9bfc3;box-shadow:0 6px 18px #17202b08}.admin-quick-links strong{font-size:13px}.admin-quick-links span{grid-column:1;color:#7a8491;font-size:11px}.admin-quick-links a> :last-child{grid-column:2;grid-row:1/3;align-self:center;color:#9f2a3c;font-size:18px}
+.admin-main .footer{margin-top:30px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:1080px){.admin-appointment{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}.admin-appointment-form{grid-column:1/-1;grid-template-columns:minmax(120px,.7fr) minmax(140px,1fr) auto}.admin-appointment-where{overflow-wrap:anywhere}}
+@media(max-width:760px){.admin-main{padding-top:24px}.admin-priority-strip{grid-template-columns:1fr}.admin-priority-item{padding:13px 15px}.admin-priority-item strong{font-size:21px}.admin-quick-links{grid-template-columns:1fr}.admin-panel .panel-heading{align-items:flex-start}.admin-appointment{grid-template-columns:minmax(0,1fr) auto;padding:14px 0}.admin-appointment-person,.admin-appointment-when,.admin-appointment-where{grid-column:1}.admin-appointment>.badge{grid-column:2;grid-row:1;align-self:start}.admin-appointment-form{grid-column:1/-1;grid-template-columns:1fr}.admin-appointment-form .button{width:100%}}
+@media(max-width:540px){.admin-main{padding-inline:13px}.admin-page-heading .button{width:100%}.admin-panel{padding:16px 13px}.admin-panel .panel-heading h2{font-size:16px}.admin-appointment{grid-template-columns:minmax(0,1fr)}.admin-appointment>.badge{grid-column:1;grid-row:auto;justify-self:start}.admin-appointment-form{grid-column:1}.admin-sidebar>a{min-height:42px}.admin-sidebar .side-logout{padding-inline:8px}}
+@media(prefers-reduced-motion:reduce){.admin-quick-links a,.admin-sidebar>a{transition:none}}
+
+.admin-inventory-filters{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin:0 0 16px}.admin-inventory-filters label{display:grid;gap:5px;min-width:145px;color:#626d79;font-size:11px;font-weight:650}.admin-inventory-filters select{min-height:38px;padding:7px 10px;border:1px solid #dfe2e7;border-radius:8px;background:#fff;color:#303944;font-size:12px}.admin-inventory-filters select:focus{outline:3px solid #a9273d22;border-color:#b94759}.action-stack{display:grid;grid-template-columns:minmax(180px,1fr);gap:10px;min-width:200px}.action-stack form{padding:10px;border:1px solid #ece7e8;border-radius:10px;background:#fffdfd}.action-stack textarea{width:100%;min-height:56px;resize:vertical;padding:8px 9px;border:1px solid #dfe2e7;border-radius:7px;font:inherit;font-size:11px}.action-stack textarea:focus{outline:3px solid #a9273d22;border-color:#b94759}.action-stack .button{width:100%;margin-top:7px}.admin-main table{min-width:720px}
+@media(max-width:540px){.admin-inventory-filters{display:grid;grid-template-columns:1fr}.admin-inventory-filters label{min-width:0}.admin-inventory-filters .button{width:100%}.action-stack{min-width:220px}}
+
+/* Dense, responsive review and stock views. */
+.request-list{display:grid;gap:14px}.request-card{min-width:0;padding:20px;border:1px solid #e7e4e5;border-radius:15px;background:#fff;box-shadow:0 5px 18px rgba(34,42,52,.035)}.request-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:14px;border-bottom:1px solid #eef0f2}.request-card-head h2{margin:4px 0;color:#28313c;font-size:18px;overflow-wrap:anywhere}.request-card-head p{margin:0;color:#74808d;font-size:12px}.request-facts{display:grid;grid-template-columns:repeat(4,minmax(95px,1fr));gap:12px;padding:16px 0}.request-facts>div{display:grid;align-content:start;gap:5px;min-width:0}.request-facts small{color:#71808e;font-size:11px}.request-facts strong{color:#28313c;font-size:14px;overflow-wrap:anywhere}.request-facts .request-stock{grid-column:1/-1;padding:12px;border-radius:10px;background:#f8f9fb}.stock-sufficient{color:#246344;font-size:12px}.stock-insufficient{color:#963449;font-size:12px;font-weight:700}.request-notes{color:#556170;font-size:13px;line-height:1.55}.request-history{margin:12px 0;color:#526071;font-size:12px}.request-history summary{width:max-content;cursor:pointer;font-weight:700}.request-review{display:grid;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid #eef0f2}.request-review>label{display:grid;gap:6px;color:#505c69;font-size:12px;font-weight:650}.request-review textarea{width:100%;min-height:68px;resize:vertical;padding:10px 12px;border:1px solid #d9dfe5;border-radius:9px;background:#fff;color:#28313c;font:inherit;font-size:13px}.request-review textarea:focus{outline:3px solid #a9273d22;border-color:#b94759}.request-actions{display:flex;flex-wrap:wrap;gap:10px}.request-actions .button{min-width:150px}.button-danger{background:#fff;color:#9f293d;border:1px solid #d9aeb5}.button-danger:hover{background:#fff4f5}.inventory-summary{grid-template-columns:repeat(4,minmax(0,1fr))}.inventory-availability .admin-inventory-filters{margin-top:10px}.stock-group-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.component-stock{padding:14px 0;border-top:1px solid #edf0f2}.component-stock h3{margin:0 0 10px;color:#343e49;font-size:14px}.stock-group{display:grid;grid-template-columns:auto 1fr;gap:2px 9px;padding:10px;border:1px solid #ebedf0;border-radius:9px;background:#fff}.stock-group>span{color:#4d5865;font-size:12px}.stock-group strong{justify-self:end;color:#28313c;font-size:15px}.stock-group small{grid-column:1/-1;color:#7a8490;font-size:10px}.selected-stock{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid #ead9dc;border-radius:10px;background:#fff7f7;color:#5b4650;font-size:12px}.selected-stock strong{color:#982637;font-size:18px}.admin-inventory-filters .check-row{display:flex;align-items:center;gap:8px;min-height:38px}.admin-inventory-filters .check-row input{width:16px;height:16px;accent-color:#a52a3d}
+@media(max-width:760px){.inventory-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.request-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.stock-group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.request-actions .button{flex:1 1 160px}}
+@media(max-width:480px){.request-card{padding:15px}.request-card-head{align-items:flex-start}.request-card-head h2{font-size:16px}.request-facts{gap:10px}.inventory-summary{grid-template-columns:1fr 1fr}.stock-group-grid{grid-template-columns:1fr 1fr}.selected-stock{align-items:flex-start;flex-direction:column}}
+
+
+/* Compact Admin donation entry with stable areas despite Thymeleaf's hidden CSRF input. */
+.donation-entry-panel{padding:14px 16px}
+.donation-entry-heading{margin-bottom:10px!important}
+.donation-entry-heading h2{margin:0 0 3px!important;font-size:17px!important}
+.donation-entry-heading p{font-size:12px!important;line-height:1.4}
+.donation-entry-form{display:grid;grid-template-columns:minmax(170px,1.3fr) minmax(210px,1.55fr) minmax(145px,1fr) minmax(96px,.55fr);grid-template-areas:"donor appointment component units" "date batch batch action";gap:12px 14px;align-items:stretch}
+.donation-entry-form input[type=hidden]{display:none}
+.donation-entry-form .donation-field{display:grid;align-content:start;gap:6px;min-width:0;font-size:11px;line-height:1.3}
+.donation-field-donor{grid-area:donor}.donation-field-appointment{grid-area:appointment}.donation-field-component{grid-area:component}.donation-field-units{grid-area:units}.donation-field-date{grid-area:date}.donation-field-batch{grid-area:batch}
+.donation-entry-form .donation-field-title{display:flex;align-items:baseline;gap:5px;min-height:15px;white-space:nowrap}
+.donation-entry-form .donation-field-title .muted{font-size:10px;font-weight:500}
+.donation-entry-form .field-hint{font-size:10px;line-height:1.3;font-weight:400}
+.donation-entry-form input:not([type=hidden]),.donation-entry-form select{width:100%;min-width:0;height:46px;min-height:46px;padding:8px 10px;font-size:12px}
+.donation-entry-form .donation-entry-action{grid-area:action;display:flex;align-items:end;min-width:0}
+.donation-entry-form .donation-entry-action .button{width:100%;min-width:0;min-height:46px;padding:9px 10px;font-size:12px;white-space:nowrap}
+.training-clock-panel{display:grid;grid-template-columns:minmax(230px,1fr) minmax(330px,1.2fr);align-items:center;gap:18px;padding:18px 20px;border-color:#dec875;background:#fffdf5}.training-clock-panel h2{margin:3px 0 5px;font-size:17px}.training-clock-panel p{margin:0 0 6px;color:#687381;font-size:12px}.training-clock-panel small{color:#687381;font-size:11px}.training-clock-panel small strong{color:#453a22}.training-clock-form{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:10px}.training-clock-form label{display:grid;gap:5px;color:#596372;font-size:11px;font-weight:650}.training-clock-form input{width:100%;height:40px;padding:7px 9px;border:1px solid #d8dfe6;border-radius:8px;font:inherit;font-size:12px}.training-clock-form .button{min-height:40px;padding:8px 12px;font-size:11px;white-space:nowrap}.training-note{margin:6px 0;color:#815e00;font-size:10px;font-weight:650}
+@media(max-width:900px){.donation-entry-form{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"donor appointment" "component units" "date batch" "action action";gap:12px}}
+@media(max-width:540px){.donation-entry-panel{padding:14px 13px}.donation-entry-form{grid-template-columns:minmax(0,1fr);grid-template-areas:"donor" "appointment" "component" "units" "date" "batch" "action";gap:11px}.donation-entry-form .donation-entry-action .button{width:100%}}
+@media(max-width:760px){.training-clock-panel{grid-template-columns:1fr}.training-clock-form{grid-template-columns:1fr 1fr}.training-clock-form .button{grid-column:1/-1}}
+
+/* Inventory and donation receipts keep provenance fields legible on narrow screens. */
+.inventory-receipt-form{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 14px}
+.inventory-receipt-form label{display:grid;align-content:start;gap:5px;min-width:0;color:#596372;font-size:11px;font-weight:650}
+.inventory-receipt-form input,.inventory-receipt-form select{box-sizing:border-box;width:100%;min-width:0;height:42px;min-height:42px;padding:8px 10px;border:1px solid #d9dfe5;border-radius:8px;background:#fff;color:#28313c;font:inherit;font-size:12px}
+.inventory-receipt-form input:focus,.inventory-receipt-form select:focus,.donation-stock-receipt input:focus{outline:3px solid #a9273d22;border-color:#b94759}
+.inventory-receipt-form .form-action{display:flex;align-items:end}
+.inventory-receipt-form .form-action .button{min-height:42px;white-space:nowrap}
+.donation-stock-cell{min-width:330px}.donation-stock-receipt{display:grid;grid-template-columns:repeat(3,minmax(90px,1fr));align-items:end;gap:8px;min-width:350px}
+.donation-stock-receipt label{display:grid;gap:4px;min-width:0;color:#596372;font-size:10px;font-weight:650}
+.donation-stock-receipt input{box-sizing:border-box;width:100%;min-width:0;height:36px;padding:6px 8px;border:1px solid #d9dfe5;border-radius:7px;background:#fff;color:#28313c;font:inherit;font-size:11px}
+.donation-stock-receipt .button{grid-column:1/-1;justify-self:start;min-height:34px}
+@media(max-width:900px){.inventory-receipt-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.inventory-receipt-form{grid-template-columns:minmax(0,1fr)}.inventory-receipt-form .form-action .button{width:100%}.donation-stock-receipt{grid-template-columns:minmax(0,1fr);min-width:250px}.donation-stock-receipt .button{grid-column:1;justify-self:stretch}}
+
+/* Target quantities and unverified sample batches stay inside the normal inventory workspace. */
+.target-plan-panel{border-color:#ead8dc;background:linear-gradient(145deg,#fff 0%,#fffafb 100%)}
+.target-plan-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.target-plan-grid .stock-group{min-width:0;padding:12px;border:1px solid #eee3e5;border-radius:11px;background:#fff}
+.target-plan-grid .stock-group strong{font-variant-numeric:tabular-nums}
+.sample-safety-note{margin:14px 0 0;padding:11px 13px;border-left:3px solid #ae2840;border-radius:0 8px 8px 0;background:#fff4f5;color:#71303c;font-size:12px;line-height:1.55}
+.target-initializer-form{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid #f0e3e5}
+.target-initializer-form p{margin:0;color:#65707c;font-size:12px;line-height:1.5}
+.sample-source-badge{display:inline-flex;margin:5px 0 0;padding:4px 7px;border:1px solid #e9c5cc;border-radius:999px;background:#fff2f4;color:#8a2639;font-size:9px;font-weight:750;line-height:1.3}
+.sample-quantity-note{display:block;color:#8a2639;font-size:10px}
+.unverified-sample-row{background:#fffafb}
+.sample-detail-warning{border-color:#e8c3ca;background:#fff5f6;color:#702b38}
+.sample-detail-warning strong{font-size:12px;letter-spacing:.04em}
+.sample-detail-warning p{margin:8px 0 0;font-size:12px;line-height:1.6}
+@media(max-width:900px){.target-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.target-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.target-initializer-form{align-items:stretch;flex-direction:column}.target-initializer-form .button{width:100%}}
+

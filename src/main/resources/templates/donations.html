@@ -1,0 +1,75 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Donations & appointments · BBMS</title><link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/admin.css"></head><body><div th:replace="~{fragments/layout :: topbar}"></div><div class="dash-shell"><aside th:replace="~{fragments/layout :: sidebar('donations')}"></aside><main class="dash-main admin-main"><div th:replace="~{fragments/layout :: alerts}"></div><header class="page-heading admin-page-heading"><div><span class="eyebrow">DONOR OPERATIONS</span><h1>Donations &amp; <em>appointments.</em></h1><p>Manage appointment transitions and keep donation records tied to actual completed visits.</p></div></header>
+<section class="panel admin-panel"><div class="panel-heading"><div><span class="eyebrow">APPOINTMENT QUEUE</span><h2>Upcoming visits requiring action</h2><p>Mark attendance only when the donor arrives. Completion requires a linked donation record.</p></div></div><div class="admin-appointment-list" th:if="${!#lists.isEmpty(appointmentQueue)}"><article class="admin-appointment" th:each="a:${appointmentQueue}"><div class="admin-appointment-person"><strong th:text="${a.donor.name}">Donor</strong><small th:text="${a.donor.email}">Email</small></div><div class="admin-appointment-when"><strong th:text="${#temporals.format(a.requestedDate,'EEE, dd MMM yyyy')}">Date</strong><span th:text="${a.requestedTime != null ? a.requestedTime : 'Time not set'}">Time</span></div><div class="admin-appointment-where" th:text="${a.location}">Location</div><span class="badge" th:classappend="${'badge-' + #strings.toLowerCase(a.status)}" th:text="${a.status}">PENDING</span><form th:action="@{/admin/appointments/{id}/status(id=${a.id})}" method="post" class="admin-appointment-form"><label class="sr-only" th:for="${'appointment-action-' + a.id}">Appointment action</label><select name="status" th:id="${'appointment-action-' + a.id}" required><option th:if="${a.status == 'PENDING'}" value="CONFIRMED">Confirm</option><option th:if="${a.status == 'PENDING'}" value="REJECTED">Reject</option><option th:if="${a.status == 'PENDING' || a.status == 'CONFIRMED'}" value="CANCELLED">Cancel</option><option th:if="${a.status == 'CONFIRMED'}" value="ATTENDED">Mark attended</option></select><input name="detail" maxlength="400" placeholder="Optional action note" aria-label="Optional action note"><button class="button button-small">Apply</button></form></article></div><div class="admin-empty-state" th:if="${#lists.isEmpty(appointmentQueue)}"><strong>Appointment queue is clear</strong><span>Pending and confirmed future visits appear here.</span></div></section>
+<section class="panel training-clock-panel" th:if="${trainingMode}" aria-labelledby="training-clock-title"><div><span class="eyebrow">SIMULATION CONTROL</span><h2 id="training-clock-title">Training clock</h2><p>Advance simulated time to demonstrate attendance rules. This does not change the computer clock.</p><small>Current simulated time: <strong th:text="${trainingNow}">training time</strong></small></div><form method="post" th:action="@{/admin/training/clock/advance}" class="training-clock-form"><label>Date<input type="date" name="date" th:value="${trainingNow.toLocalDate()}" required></label><label>Time<input type="time" name="time" th:value="${trainingNow.toLocalTime()}" required></label><button class="button button-primary">Advance training clock</button></form></section>
+<section class="panel admin-panel donation-entry-panel" aria-labelledby="donation-entry-title">
+  <div class="panel-heading donation-entry-heading"><div><h2 id="donation-entry-title">Record a donation</h2><p>Link an attended visit to update donor progress.</p></div></div>
+  <form id="donation-entry-form" method="post" th:action="@{/admin/donations}" class="form-grid donation-entry-form">
+    <label for="donation-donor" class="donation-field donation-field-donor"><span class="donation-field-title">Donor</span>
+      <select id="donation-donor" name="donorId" required>
+        <option value="" disabled selected>Select donor</option>
+        <option th:each="u:${donorAccounts}" th:value="${u.id}" th:text="${u.name + ' · ' + u.bloodGroup}"></option>
+      </select>
+    </label>
+    <label for="donation-appointment" class="donation-field donation-field-appointment"><span class="donation-field-title">Attended appointment <span class="muted">(optional)</span></span>
+      <select id="donation-appointment" name="appointmentId" aria-describedby="donation-appointment-help">
+        <option value="">Unlinked walk-in record</option>
+        <option th:each="a:${attendedAppointments}" th:value="${a.id}" th:text="${a.donor.name + ' · ' + a.requestedDate}"></option>
+      </select>
+      <small id="donation-appointment-help" class="field-hint">Select the attended visit to link this donation.</small>
+    </label>
+    <label for="donation-component" class="donation-field donation-field-component"><span class="donation-field-title">Component</span>
+      <select id="donation-component" name="component" required>
+        <option th:each="c:${components}" th:value="${c}" th:text="${c}" th:selected="${c == 'Whole Blood'}"></option>
+      </select>
+    </label>
+    <label for="donation-units" class="donation-field donation-field-units"><span class="donation-field-title">Units</span>
+      <input id="donation-units" type="number" name="units" min="1" max="10" value="1" inputmode="numeric" required>
+    </label>
+    <label for="donation-date" class="donation-field donation-field-date"><span class="donation-field-title">Donation date</span>
+      <input id="donation-date" type="date" name="donationDate" th:value="${currentDate}" th:attr="max=${currentDate}" required>
+    </label>
+    <label for="donation-batch" class="donation-field donation-field-batch"><span class="donation-field-title">Related inventory batch <span class="muted">(optional)</span></span>
+      <input id="donation-batch" name="inventoryBatchId" maxlength="80" autocomplete="off">
+    </label>
+    <div class="form-action donation-entry-action"><button type="submit" class="button button-primary">Record donation</button></div>
+  </form>
+</section>
+<section class="panel admin-panel">
+  <div class="panel-heading">
+    <div><span class="eyebrow">SAVED RECORDS</span><h2>Donation history</h2><p>Released donations enter stock only through an explicit, documented receipt.</p></div>
+    <input class="table-search" type="search" placeholder="Search records…" data-table-search="donation-table">
+  </div>
+  <div class="table-scroll"><table id="donation-table">
+    <thead><tr><th>Donor</th><th>Group</th><th>Component</th><th>Units</th><th>Date</th><th>Testing status</th><th>Batch</th><th>Stock receipt</th></tr></thead>
+    <tbody>
+      <tr th:each="d:${records}">
+        <td><b th:text="${d.donor.name}"></b><small th:text="${d.donor.email}"></small></td>
+        <td th:text="${d.bloodGroup}"></td><td th:text="${d.component}"></td><td th:text="${d.units}"></td><td th:text="${d.donationDate}"></td>
+        <td>
+          <span class="badge" th:classappend="${'badge-' + #strings.toLowerCase(d.testingStatus)}" th:text="${d.testingStatus}"></span>
+          <form th:if="${!trainingMode}" th:action="@{/admin/donations/{id}/testing(id=${d.id})}" method="post" class="inline-form">
+            <label class="sr-only" th:for="${'testing-status-' + d.id}">Update testing status</label>
+            <select name="status" th:id="${'testing-status-' + d.id}"><option value="COLLECTED">Collected</option><option value="TESTING">Testing</option><option value="REJECTED">Rejected</option></select><button class="button button-small">Update</button>
+          </form>
+          <div th:if="${trainingMode and d.demoData and d.testingStatus == 'COLLECTED'}"><p class="training-note">Simulation only — not a clinical screening result.</p><form th:action="@{/admin/training/donations/{id}/simulate-screening(id=${d.id})}" method="post"><button class="button button-small">Simulate test pass</button></form></div>
+          <form th:if="${trainingMode and d.demoData and d.testingStatus == 'TRAINING_SIMULATED_PASS' and #strings.isEmpty(d.inventoryBatchId)}" th:action="@{/admin/training/donations/{id}/receive(id=${d.id})}" method="post" class="inline-form"><label class="sr-only" th:for="${'training-batch-' + d.id}">Synthetic inventory batch ID</label><input th:id="${'training-batch-' + d.id}" name="batchId" th:value="${'TRAINING-DON-'+d.id}" required><button class="button button-small">Receive synthetic units</button></form>
+        </td>
+        <td th:text="${d.inventoryBatchId}"></td>
+        <td class="donation-stock-cell">
+          <form th:if="${!trainingMode and d.testingStatus == 'TESTING' and #strings.isEmpty(d.inventoryBatchId)}" th:action="@{/admin/donations/{id}/receive(id=${d.id})}" method="post" class="donation-stock-receipt">
+            <label th:for="${'donation-receipt-batch-' + d.id}">Batch ID<input th:id="${'donation-receipt-batch-' + d.id}" name="batchId" maxlength="80" required></label>
+            <label th:for="${'donation-receipt-expiry-' + d.id}">Expiry date<input th:id="${'donation-receipt-expiry-' + d.id}" name="expiryDate" type="date" th:attr="min=${d.donationDate.plusDays(1)}" required></label>
+            <label th:for="${'donation-release-reference-' + d.id}">Verified release decision ref<input th:id="${'donation-release-reference-' + d.id}" name="releaseDecisionReference" maxlength="40" required></label>
+            <label th:for="${'donation-receipt-reference-' + d.id}">Verified physical receipt ref<input th:id="${'donation-receipt-reference-' + d.id}" name="physicalReceiptReference" maxlength="40" required></label>
+            <button class="button button-small button-primary">Record release and receipt</button>
+          </form>
+          <small th:if="${!trainingMode and d.testingStatus == 'COLLECTED' and #strings.isEmpty(d.inventoryBatchId)}" class="field-hint">Move to Testing after collection; release evidence and physical receipt references are required to create stock.</small>
+          <small th:if="${!trainingMode and d.testingStatus == 'REJECTED' and #strings.isEmpty(d.inventoryBatchId)}" class="field-hint">Rejected donation cannot enter inventory.</small>
+          <small th:if="${!trainingMode and d.testingStatus == 'RELEASED' and #strings.isEmpty(d.inventoryBatchId)}" class="field-hint">This record was released outside the receipt transaction; re-verify its evidence before any correction.</small>
+          <small th:if="${!trainingMode and !#strings.isEmpty(d.inventoryBatchId)}" class="field-hint">Received into the linked batch.</small>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(records)}"><td colspan="8" class="empty-state">No donation records yet.</td></tr>
+    </tbody>
+  </table></div>
+</section><div th:replace="~{fragments/layout :: footer}"></div></main></div><script src="/js/app.js"></script></body></html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inventory · BBMS</title>
+  <link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="dash-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('inventory')}"></aside>
+  <main class="dash-main admin-main">
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+    <div class="page-heading">
+      <div><span class="eyebrow">STOCK CONTROL</span><h1>Blood <em>inventory.</em></h1>
+        <p>Available stock includes only released, unexpired operational batches. Qualified staff must assess clinical compatibility.</p>
+      </div>
+    </div>
+
+    <div class="stats-grid inventory-summary">
+      <article class="stat-card"><span>Eligible operational units</span><strong th:text="${eligibleTotal}">0</strong><small>Released, unexpired, non-sample stock</small></article>
+      <article class="stat-card"><span>Low-stock combinations</span><strong th:text="${lowStockCount}">0</strong><small>Below five eligible units</small></article>
+      <article class="stat-card"><span>Near-expiry batches</span><strong th:text="${nearExpiryCount}">0</strong><small>Operational stock expiring within 30 days</small></article>
+      <article class="stat-card"><span>Pending requests</span><strong th:text="${pendingCount}">0</strong><small>Awaiting staff review</small></article>
+    </div>
+
+    <section class="panel inventory-availability">
+      <div class="panel-heading"><div><h2>Eligible units by component</h2><p>These figures exclude unverified sample records. Zero-stock groups are hidden by default.</p></div></div>
+      <form method="get" action="/admin/inventory" class="admin-inventory-filters">
+        <label>Blood group<select name="group"><option value="">Choose group</option><option th:each="g:${groups}" th:value="${g}" th:text="${g}" th:selected="${g == selectedGroup}"></option></select></label>
+        <label>Component<select name="component"><option value="">Choose component</option><option th:each="c:${components}" th:value="${c}" th:text="${c}" th:selected="${c == selectedComponent}"></option></select></label>
+        <label class="check-row"><input type="checkbox" name="showZeroStock" value="true" th:checked="${showZeroStock}"> Show zero-stock groups</label>
+        <button class="button button-outline button-small">Update view</button>
+      </form>
+      <div class="selected-stock" th:if="${selectedEligible != null}"><span>Eligible operational stock for your selection</span><strong th:text="${selectedEligible + ' units'}"></strong></div>
+      <div class="component-stock" th:each="c:${components}"><h3 th:text="${c}"></h3><div class="stock-group-grid">
+        <div class="stock-group" th:each="g:${groups}" th:with="qty=${stock[g + ' · ' + c]}" th:if="${showZeroStock || qty > 0}"><span th:text="${g}"></span><strong th:text="${qty}"></strong><small>eligible units</small></div>
+      </div></div>
+      <p class="empty-state" th:if="${!showZeroStock && eligibleTotal == 0}">No eligible operational stock is currently recorded. Select “Show zero-stock groups” to review all combinations.</p>
+    </section>
+
+    <section class="panel target-plan-panel">
+      <div class="panel-heading"><div><h2>Inventory planning targets</h2><p>Planning targets are not current stock or a claim of physical availability.</p></div></div>
+      <div class="stock-group-grid target-plan-grid">
+        <div class="stock-group" th:each="target:${targetPlan}"><span th:text="${target.bloodGroup}">A+</span><strong th:text="${target.targetUnits}">0</strong><small th:text="${target.component + ' target units'}">Whole Blood target units</small></div>
+      </div>
+      <p class="sample-safety-note">Unverified sample batches, if initialized, are stored as quarantined demo records and excluded from eligible inventory, public availability, and hospital fulfillment.</p>
+      <form th:if="${targetInitializerEnabled}" method="post" action="/admin/inventory/target-samples/initialize" class="target-initializer-form">
+        <p>Record only the difference between these planning targets and currently eligible operational stock as clearly marked, quarantined sample batches.</p>
+        <button class="button button-outline" type="submit">Add unverified target samples</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading"><div><h2>Receive a blood batch</h2><p>Operational receipts begin in testing or quarantine. Qualified staff record release separately with its verified decision reference.</p></div></div>
+      <form method="post" th:action="@{/admin/inventory}" class="form-grid inventory-receipt-form">
+        <label>Batch identifier<input name="batchId" required maxlength="80"></label>
+        <label>Blood group<select name="bloodGroup" required><option th:each="g:${groups}" th:value="${g}" th:text="${g}"></option></select></label>
+        <label>Component<select name="component" required><option th:each="c:${components}" th:value="${c}" th:text="${c}"></option></select></label>
+        <label>Quantity<input type="number" name="quantity" min="1" value="1" required></label>
+        <label>Collection date<input type="date" name="collectionDate" th:attr="max=${currentDate}" required></label>
+        <label>Expiry date<input type="date" name="expiryDate" required></label>
+        <label>Initial status<select name="status" required><option value="QUARANTINED">Quarantined</option><option value="TESTING" selected>Testing</option><option th:if="${trainingMode}" value="RELEASED">Released (training only)</option></select></label>
+        <label>Physical receipt reference<input name="receiptReference" maxlength="100" required placeholder="Verified receipt document ID"></label>
+        <div class="form-action"><button class="button button-primary">Record receipt</button></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading"><div><h2>Recorded batches</h2><p>Unavailable batches remain traceable here. Sample records are clearly marked and never count as operational stock.</p></div><input class="table-search" type="search" placeholder="Search batches…" data-table-search="stock-table"></div>
+      <form method="get" action="/admin/inventory" class="admin-inventory-filters">
+        <label>Group<select name="group"><option value="">All groups</option><option th:each="g:${groups}" th:value="${g}" th:text="${g}" th:selected="${g == selectedGroup}"></option></select></label>
+        <label>Component<select name="component"><option value="">All components</option><option th:each="c:${components}" th:value="${c}" th:text="${c}" th:selected="${c == selectedComponent}"></option></select></label>
+        <label>Status<select name="status"><option value="">All statuses</option><option value="RELEASED" th:selected="${selectedStatus == 'RELEASED'}">Released</option><option value="QUARANTINED" th:selected="${selectedStatus == 'QUARANTINED'}">Quarantined</option><option value="TESTING" th:selected="${selectedStatus == 'TESTING'}">Testing</option></select></label>
+        <label>Expiry<select name="expiry"><option value="">Any expiry</option><option value="next30" th:selected="${selectedExpiry == 'next30'}">Expires within 30 days</option><option value="expired" th:selected="${selectedExpiry == 'expired'}">Expired</option></select></label>
+        <button class="button button-outline button-small">Apply filters</button><a class="subtle-link" href="/admin/inventory">Clear</a>
+      </form>
+      <div class="table-scroll"><table id="stock-table"><thead><tr><th>Batch</th><th>Blood group</th><th>Component</th><th>Recorded / collection date</th><th>Expiry / sample date</th><th>Recorded qty</th><th>Status and source</th></tr></thead>
+        <tbody>
+          <tr th:each="u:${units}" th:classappend="${u.demoData ? 'unverified-sample-row' : ''}">
+            <td><a th:href="@{/admin/inventory/{id}(id=${u.id})}" th:text="${u.batchId}"></a></td><td th:text="${u.bloodGroup}"></td><td th:text="${u.component}"></td><td th:text="${u.demoData ? 'Sample record' : u.collectionDate}"></td><td th:text="${u.demoData ? 'Not clinically validated' : u.expiryDate}"></td><td><span th:text="${u.quantity}"></span><small class="sample-quantity-note" th:if="${u.demoData}"> recorded; unavailable</small></td>
+            <td><span class="badge" th:classappend="${'badge-' + #strings.toLowerCase(u.status)}" th:text="${u.status}"></span><span th:if="${u.demoData}" class="sample-source-badge" th:text="${trainingMode ? 'TRAINING DATA — NOT CLINICAL' : 'UNVERIFIED SAMPLE — NOT REAL STOCK'}"></span></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(units)}"><td colspan="7" class="empty-state">No batches match these filters.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+  </main>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

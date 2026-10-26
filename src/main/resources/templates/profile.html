@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Profile · BBMS</title><link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/donor.css"></head>
+<body th:classappend="${profile.role == 'DONOR' ? ' donor-body' : ''}">
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="donor-shell" th:if="${profile.role == 'DONOR'}">
+  <aside th:replace="~{fragments/donor-navigation :: rail('profile',${profile.name})}"></aside>
+  <main class="donor-main donor-profile-main">
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+    <header class="donor-page-heading"><span class="donor-kicker">ACCOUNT SETTINGS</span><h1>Your profile</h1><p>Review the details associated with your donor account.</p></header>
+    <section class="donor-section donor-profile-edit-card" aria-labelledby="profile-edit-heading">
+      <div class="donor-section-heading"><div><h2 id="profile-edit-heading">Contact and donor details</h2><p>Only these profile fields are available in BBMS. Your email address is fixed.</p></div></div>
+      <form method="post" th:action="@{/donor/profile}" class="donor-profile-form">
+        <label class="donor-field"><span>Full name</span><input name="name" th:value="${profile.name}" required maxlength="100" autocomplete="name"></label>
+        <label class="donor-field"><span>Blood group</span><select name="bloodGroup" required><option value="">Choose your blood group</option><option th:each="g:${groups}" th:value="${g}" th:text="${g}" th:selected="${g == profile.bloodGroup}"></option></select><small>This is the value stored on your profile; BBMS does not infer or verify it.</small></label>
+        <label class="donor-field donor-field-wide"><span>Email address</span><input th:value="${profile.email}" disabled autocomplete="email"><small>Email changes are not supported here.</small></label>
+        <label class="donor-field donor-field-wide"><span>Phone number <small>(optional)</small></span><input name="phone" th:value="${profile.phone}" maxlength="40" autocomplete="tel" inputmode="tel"><small>Leave blank if you do not want to store a phone number.</small></label>
+        <div class="donor-form-submit donor-profile-submit"><button class="donor-button donor-button-primary" type="submit">Save profile <span aria-hidden="true">→</span></button><a class="donor-text-link" href="/donor/dashboard">Return to donor home</a></div>
+      </form>
+    </section>
+    <aside class="donor-guidance"><span class="donor-guidance-mark" aria-hidden="true">i</span><p><strong>Need to update your password?</strong> Password changes are not supported in this profile screen. Contact the local administrator for account help.</p></aside>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+  </main>
+</div>
+<main class="simple-page" th:if="${profile.role != 'DONOR'}"><div th:replace="~{fragments/layout :: alerts}"></div><div class="page-heading"><div><span class="eyebrow">ACCOUNT SETTINGS</span><h1>Your <em>profile.</em></h1><p>Update your contact and account display information.</p></div><a href="/dashboard" class="button button-outline">← Dashboard</a></div><section class="panel profile-panel"><form method="post" th:action="@{/{role}/profile(role=${#strings.toLowerCase(profile.role)})}" class="form-stack"><label>Full name<input name="name" th:value="${profile.name}" required maxlength="100"></label><label>Organization<input name="organization" th:value="${profile.organization}" maxlength="150"></label><label>Email address<input th:value="${profile.email}" disabled><small>Email address cannot be changed here.</small></label><label>Phone number<input name="phone" th:value="${profile.phone}" maxlength="40"></label><button class="button button-primary">Save profile <b>→</b></button></form></section><div th:replace="~{fragments/layout :: footer}"></div></main>
+<script src="/js/app.js"></script></body></html>

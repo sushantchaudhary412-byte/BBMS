@@ -1,0 +1,39 @@
+# Maven & Build
+target/
+*.class
+*.jar
+
+# IDEs & OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Secrets & Local Config (BLOCK ALL)
+.env*
+*.secret
+*.key
+*.pem
+*.local
+
+# EXPLICIT ALLOWANCE for reviewed templates
+!.env.example
+!.env.presentation.example
+
+# Database & Logs (BLOCK ALL)
+*.log
+*.tmp
+*.bak
+*.sql
+*.dump
+backup/
+
+# Explicit exclusion of audit/report files (PII risk)
+ACCOUNT_CLEANUP_AUDIT.md
+PROJECT_AUDIT.md
+BBMS_COMPREHENSIVE_TEST_REPORT.md
+BBMS_INVENTORY_AUDIT.md
+BBMS_TRAINING_SETUP_REPORT.md
+
+# Private tmp residues
+/private/tmp/bbms*

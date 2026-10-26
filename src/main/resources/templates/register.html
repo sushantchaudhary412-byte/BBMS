@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf8f7">
+  <title>Create account · BBMS</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="auth-page registration-page">
+<div th:replace="~{fragments/layout :: topbar}"></div>
+
+<main class="registration-shell">
+  <header class="registration-heading">
+    <span class="eyebrow"><i></i> JOIN THE BBMS NETWORK</span>
+    <h1>Make care easier to coordinate.</h1>
+    <p>Create a secure account as a donor or healthcare requester.</p>
+  </header>
+
+  <section class="registration-card" aria-labelledby="registration-title">
+    <div class="registration-card-heading">
+      <div class="registration-icon" aria-hidden="true">✚</div>
+      <div>
+        <span class="eyebrow">GET STARTED</span>
+        <h2 id="registration-title">Create your account</h2>
+        <p>Fields marked <span aria-hidden="true">*</span> are required.</p>
+      </div>
+    </div>
+
+    <form method="post" th:action="@{/register}" th:object="${registrationForm}" class="registration-form">
+      <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error form-alert" role="alert" tabindex="-1">
+        <p th:each="err:${#fields.globalErrors()}" th:text="${err}"></p>
+      </div>
+
+      <label class="field field-wide" for="role">
+        <span>Account type <b aria-hidden="true">*</b></span>
+        <select id="role" th:field="*{role}" th:errorclass="field-invalid" required aria-describedby="role-help" th:attr="aria-invalid=${#fields.hasErrors('role')}">
+          <option value="DONOR">Blood Donor</option>
+          <option value="HOSPITAL">Hospital / Requester</option>
+        </select>
+        <small id="role-help" class="field-hint">Choose how you will use BBMS.</small>
+        <small th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="field-error"></small>
+      </label>
+
+      <label class="field" for="name">
+        <span>Your name <b aria-hidden="true">*</b></span>
+        <input id="name" type="text" th:field="*{name}" th:errorclass="field-invalid" required maxlength="100" autocomplete="name" placeholder="e.g. Alex Morgan" th:attr="aria-invalid=${#fields.hasErrors('name')}">
+        <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="field-error"></small>
+      </label>
+
+      <label class="field" for="email">
+        <span>Email address <b aria-hidden="true">*</b></span>
+        <input id="email" type="email" th:field="*{email}" th:errorclass="field-invalid" required maxlength="254" autocomplete="email" placeholder="you@example.com" th:attr="aria-invalid=${#fields.hasErrors('email')}">
+        <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="field-error"></small>
+      </label>
+
+      <label id="blood-field" class="field" for="bloodGroup" th:classappend="${registrationForm.role != 'DONOR' ? 'is-hidden' : ''}">
+        <span>Blood group <b aria-hidden="true">*</b></span>
+        <select id="bloodGroup" th:field="*{bloodGroup}" th:errorclass="field-invalid" th:attr="aria-invalid=${#fields.hasErrors('bloodGroup')}">
+          <option value="">Choose your blood group</option>
+          <option th:each="g:${groups}" th:value="${g}" th:text="${g}"></option>
+        </select>
+        <small th:if="${#fields.hasErrors('bloodGroup')}" th:errors="*{bloodGroup}" class="field-error"></small>
+      </label>
+
+      <label id="org-field" class="field" for="organization" th:classappend="${registrationForm.role != 'HOSPITAL' ? 'is-hidden' : ''}">
+        <span>Organization name <b aria-hidden="true">*</b></span>
+        <input id="organization" type="text" th:field="*{organization}" th:errorclass="field-invalid" maxlength="150" autocomplete="organization" placeholder="Hospital or clinic name" th:attr="aria-invalid=${#fields.hasErrors('organization')}">
+        <small th:if="${#fields.hasErrors('organization')}" th:errors="*{organization}" class="field-error"></small>
+      </label>
+
+      <label class="field" for="phone">
+        <span>Phone number <em>(optional)</em></span>
+        <input id="phone" type="tel" th:field="*{phone}" th:errorclass="field-invalid" maxlength="40" autocomplete="tel" placeholder="Your contact number">
+        <small th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="field-error"></small>
+      </label>
+
+      <label class="field field-wide" for="password">
+        <span>Password <b aria-hidden="true">*</b></span>
+        <span class="password-control">
+          <input id="password" name="password" type="password" required minlength="10" maxlength="72" autocomplete="new-password" aria-describedby="password-help" th:classappend="${#fields.hasErrors('password') ? 'field-invalid' : ''}" th:attr="aria-invalid=${#fields.hasErrors('password')}">
+          <button type="button" class="password-toggle" data-password-toggle="password" aria-label="Show password" aria-pressed="false">Show</button>
+        </span>
+        <small id="password-help" class="field-hint">Use 10–72 characters. Your password is stored securely and never shown again.</small>
+        <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="field-error"></small>
+      </label>
+
+      <div class="registration-submit field-wide">
+        <button class="button button-primary full" type="submit">Create account <span aria-hidden="true">→</span></button>
+        <p>Already have an account? <a href="/login">Sign in</a></p>
+      </div>
+    </form>
+  </section>
+
+  <p class="registration-footnote">Your details are used to manage your BBMS account. This academic prototype is not for clinical decisions.</p>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="/js/app.js" defer></script>
+</body>
+</html>

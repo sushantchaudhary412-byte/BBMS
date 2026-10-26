@@ -1,0 +1,12 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><body>
+<aside th:fragment="rail(active, displayName)" class="donor-rail" aria-label="Donor workspace navigation">
+  <a class="donor-identity" href="/donor/dashboard"><span class="donor-avatar" aria-hidden="true">♥</span><span><strong th:text="${displayName}">Donor</strong><small>Donor workspace</small></span></a>
+  <nav class="donor-nav-links" aria-label="Donor sections">
+    <a href="/donor/dashboard" th:classappend="${active == 'dashboard' ? ' is-active' : ''}" th:attr="aria-current=${active == 'dashboard' ? 'page' : null}"><span class="donor-nav-icon" aria-hidden="true">▦</span><span>Overview</span></a>
+    <a href="/donor/appointments" th:classappend="${active == 'appointments' ? ' is-active' : ''}" th:attr="aria-current=${active == 'appointments' ? 'page' : null}"><span class="donor-nav-icon" aria-hidden="true">◷</span><span>Appointments</span></a>
+    <a href="/donor/history" th:classappend="${active == 'history' ? ' is-active' : ''}" th:attr="aria-current=${active == 'history' ? 'page' : null}"><span class="donor-nav-icon" aria-hidden="true">↗</span><span>Donation history</span></a>
+    <a href="/donor/profile" th:classappend="${active == 'profile' ? ' is-active' : ''}" th:attr="aria-current=${active == 'profile' ? 'page' : null}"><span class="donor-nav-icon" aria-hidden="true">○</span><span>My profile</span></a>
+  </nav>
+  <p class="donor-nav-note">Private account · Your records are shown only to you.</p>
+</aside>
+</body></html>
